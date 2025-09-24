@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import 'image_picker_widget.dart';
 
 // Widget tái sử dụng cho form thêm/sửa sản phẩm
 class ProductFormDialog extends StatefulWidget {
-  const ProductFormDialog({
-    super.key,
-    this.product,
-    required this.onSave,
-  });
+  const ProductFormDialog({super.key, this.product, required this.onSave});
 
   final Product? product;
   final Function(Product) onSave;
@@ -20,13 +17,19 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   late final TextEditingController _nameController;
   late final TextEditingController _imageController;
   late final TextEditingController _descController;
+  String? _selectedImagePath;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.product?.name ?? '');
-    _imageController = TextEditingController(text: widget.product?.imageUrl ?? '');
-    _descController = TextEditingController(text: widget.product?.description ?? '');
+    _imageController = TextEditingController(
+      text: widget.product?.imageUrl ?? '',
+    );
+    _descController = TextEditingController(
+      text: widget.product?.description ?? '',
+    );
+    _selectedImagePath = widget.product?.localImagePath;
   }
 
   @override
@@ -41,13 +44,17 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
     final name = _nameController.text.trim();
     if (name.isEmpty) return;
 
+    // Ưu tiên ảnh local trước, nếu không có thì dùng URL
+    String imageUrl = _imageController.text.trim().isEmpty
+        ? 'https://via.placeholder.com/150'
+        : _imageController.text.trim();
+
     final product = Product(
       id: widget.product?.id ?? DateTime.now().millisecondsSinceEpoch,
       name: name,
-      imageUrl: _imageController.text.trim().isEmpty
-          ? 'https://via.placeholder.com/150'
-          : _imageController.text.trim(),
+      imageUrl: imageUrl,
       description: _descController.text.trim(),
+      localImagePath: _selectedImagePath,
     );
 
     widget.onSave(product);
@@ -72,22 +79,62 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 16),
-          TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: 'Tên sản phẩm *',
-              border: OutlineInputBorder(),
-            ),
+
+          // Image picker section
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Ảnh sản phẩm',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    const SizedBox(height: 8),
+                    ImagePickerWidget(
+                      initialImagePath:
+                          _selectedImagePath ?? widget.product?.imageUrl,
+                      onImageChanged: (path) {
+                        setState(() {
+                          _selectedImagePath = path;
+                        });
+                      },
+                      width: 120,
+                      height: 120,
+                      placeholder: 'Chọn ảnh',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Tên sản phẩm *',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: _imageController,
+                      decoration: const InputDecoration(
+                        labelText: 'URL ảnh (tùy chọn)',
+                        border: OutlineInputBorder(),
+                        helperText: 'Hoặc chọn ảnh từ thiết bị',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _imageController,
-            decoration: const InputDecoration(
-              labelText: 'URL ảnh (tùy chọn)',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
+
+          const SizedBox(height: 16),
           TextField(
             controller: _descController,
             decoration: const InputDecoration(

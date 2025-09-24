@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import '../models/product.dart';
+import 'image_picker_widget.dart';
 
 // Widget tái sử dụng cho hiển thị sản phẩm
 class ProductCard extends StatelessWidget {
@@ -20,41 +22,43 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            product.imageUrl,
-            width: 56,
-            height: 56,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => 
-                const Icon(Icons.image_not_supported),
-          ),
-        ),
-        title: Text(product.name),
-        subtitle: Text(
-          product.description,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        onTap: onTap,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
+      child: Slidable(
+        key: ValueKey(product.id),
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 0.5,
           children: [
             if (onEdit != null)
-              IconButton(
-                tooltip: 'Sửa',
-                icon: const Icon(Icons.edit),
-                onPressed: onEdit,
+              SlidableAction(
+                onPressed: (_) => onEdit?.call(),
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                icon: Icons.edit,
+                label: 'Sửa',
               ),
             if (onDelete != null)
-              IconButton(
-                tooltip: 'Xóa',
-                icon: const Icon(Icons.delete),
-                onPressed: onDelete,
+              SlidableAction(
+                onPressed: (_) => onDelete?.call(),
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: 'Xóa',
               ),
           ],
+        ),
+        child: ListTile(
+          leading: ProductImageWidget(
+            imagePath: product.displayImagePath,
+            width: 56,
+            height: 56,
+          ),
+          title: Text(product.name),
+          subtitle: Text(
+            product.description,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onTap: onTap,
         ),
       ),
     );

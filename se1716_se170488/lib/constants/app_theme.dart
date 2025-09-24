@@ -1,54 +1,56 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const _primaryColor = Colors.deepPurple;
-  
+  static const _primaryColor = Color.fromARGB(255, 16, 86, 184);
+  static const _foregroundColor = Color.fromARGB(255, 227, 226, 222);
+  static const _seedColor = Color.fromARGB(255, 34, 76, 113);
+
   static ThemeData lightTheme = ThemeData(
     colorScheme: ColorScheme.fromSeed(
-      seedColor: _primaryColor,
+      seedColor: _seedColor.withValues(alpha: 0.8),
       brightness: Brightness.light,
     ),
     useMaterial3: true,
-    
-    // AppBar theme
-    appBarTheme: const AppBarTheme(
-      centerTitle: true,
-      elevation: 0,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: _primaryColor, // màu nền nút Add
+      foregroundColor: _foregroundColor, // màu icon
     ),
-    
+    // AppBar theme
+    appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+
     // Card theme
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     ),
-    
+
     // Button theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     ),
-    
+
     // Input decoration theme
     inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
   );
 
   static ThemeData darkTheme = ThemeData(
     colorScheme: ColorScheme.fromSeed(
-      seedColor: _primaryColor,
+      seedColor: _seedColor,
       brightness: Brightness.dark,
     ),
     useMaterial3: true,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: _primaryColor.withValues(alpha: 0.2), // màu nền nút Add
+      foregroundColor: _foregroundColor, // màu icon
+    ),
   );
 }
 
