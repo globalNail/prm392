@@ -1,0 +1,58 @@
+[
+    {
+        "id": "p1",
+        "name": "Smartphone Vibe X",
+        "description": "Màn hình AMOLED 6.5\u2033, pin 5000mAh, sạc nhanh 65W.",
+        "price": 12990000,
+        "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": "p2",
+        "name": "Laptop AeroBook Pro",
+        "description": "CPU Intel Gen 13, RAM 16GB, SSD 1TB, màn hình 2.8K 120Hz.",
+        "price": 32990000,
+        "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": "p3",
+        "name": "Tablet Horizon Tab",
+        "description": "Máy tính bảng 11\u2033, bút cảm ứng kèm theo, đa nhiệm mượt mà.",
+        "price": 15990000,
+        "image": "https://images.unsplash.com/photo-1510552776732-03e61cf4b144?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": "p4",
+        "name": "Smartwatch Pulse 3",
+        "description": "Theo dõi sức khỏe 24/7, chống nước 5ATM, pin 10 ngày.",
+        "price": 4990000,
+        "image": "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": "p5",
+        "name": "Tai nghe TrueSound Air",
+        "description": "Chống ồn chủ động, thời lượng 28 giờ, sạc không dây.",
+        "price": 3490000,
+        "image": "https://images.pexels.com/photos/374870/pexels-photo-374870.jpeg?auto=compress&cs=tinysrgb&w=800"
+    },
+    {
+        "id": "p6",
+        "name": "Máy ảnh Snapster Z",
+        "description": "Cảm biến 24MP, quay 4K 60fps, chống rung quang học.",
+        "price": 21990000,
+        "image": "https://images.pexels.com/photos/994605/pexels-photo-994605.jpeg?auto=compress&cs=tinysrgb&w=800"
+    },
+    {
+        "id": "p7",
+        "name": "Loa Bluetooth WaveMax",
+        "description": "Âm thanh 360°, chống nước IP67, pin 20 giờ.",
+        "price": 2790000,
+        "image": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=800&q=80"
+    },
+    {
+        "id": "p8",
+        "name": "Bàn phím cơ MechaLite",
+        "description": "Switch quang học, RGB 16.8 triệu màu, layout TKL.",
+        "price": 2490000,
+        "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80"
+    }
+]
