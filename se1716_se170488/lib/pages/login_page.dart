@@ -4,7 +4,7 @@ import 'product_list_page.dart';
 
 class LoginPage extends BasePage {
   const LoginPage({super.key})
-    : super(title: 'Login', showBackButton: false, centerTitle: true);
+    : super(title: '', showBackButton: false, centerTitle: true);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
