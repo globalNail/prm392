@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../data/repositories/sinhvien_repository.dart';
 import '../../../data/repositories/nganh_repository.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../common/result.dart';
+import '../../../common/app_theme.dart';
+import '../../../domain/services/auth_service.dart';
 
 // Provider for database statistics
 final _dbStatsProvider = FutureProvider.autoDispose<Map<String, int>>((
@@ -49,11 +52,18 @@ final _dbStatsProvider = FutureProvider.autoDispose<Map<String, int>>((
   };
 });
 
-class ReportPage extends ConsumerWidget {
+class ReportPage extends ConsumerStatefulWidget {
   const ReportPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReportPage> createState() => _ReportPageState();
+}
+
+class _ReportPageState extends ConsumerState<ReportPage> {
+  int _selectedIndex = 2;
+
+  @override
+  Widget build(BuildContext context) {
     final statsAsync = ref.watch(_dbStatsProvider);
 
     return Scaffold(
@@ -300,6 +310,85 @@ class ReportPage extends ConsumerWidget {
           ),
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          if (index == 3) {
+            // Menu item - show bottom sheet
+            _showMenuBottomSheet(context);
+          } else {
+            setState(() => _selectedIndex = index);
+            switch (index) {
+              case 0:
+                // Student list
+                context.push('/sv');
+                break;
+              case 1:
+                // Nganh list
+                context.push('/nganh');
+                break;
+              case 2:
+                // Current page - Report
+                break;
+            }
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Sinh viên'),
+          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Ngành'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assessment),
+            label: 'Báo cáo',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
+        ],
+      ),
+    );
+  }
+
+  void _showMenuBottomSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Theme toggle
+              ListTile(
+                leading: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+                title: const Text('Sáng tối'),
+                trailing: Switch(
+                  value: isDark,
+                  onChanged: (value) {
+                    ref.read(themeModeProvider.notifier).toggleTheme();
+                  },
+                ),
+                onTap: () {
+                  ref.read(themeModeProvider.notifier).toggleTheme();
+                },
+              ),
+              const Divider(),
+              // Logout
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Đăng xuất'),
+                onTap: () {
+                  ref.read(authStateProvider.notifier).logout();
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    context.go('/login');
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

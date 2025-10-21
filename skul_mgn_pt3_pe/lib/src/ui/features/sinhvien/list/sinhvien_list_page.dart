@@ -66,6 +66,7 @@ class SinhVienListPage extends ConsumerStatefulWidget {
 
 class _SinhVienListPageState extends ConsumerState<SinhVienListPage> {
   final _searchController = TextEditingController();
+  int _selectedIndex = 0;
 
   @override
   void dispose() {
@@ -112,72 +113,7 @@ class _SinhVienListPageState extends ConsumerState<SinhVienListPage> {
     final studentListAsync = ref.watch(_studentListProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Danh sách Sinh viên'),
-        actions: [
-          // Theme toggle
-          IconButton(
-            icon: Icon(
-              Theme.of(context).brightness == Brightness.dark
-                  ? Icons.light_mode
-                  : Icons.dark_mode,
-            ),
-            onPressed: () {
-              ref.read(themeModeProvider.notifier).toggleTheme();
-            },
-          ),
-          // Navigation menu
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              switch (value) {
-                case 'nganh':
-                  context.push('/nganh');
-                  break;
-                case 'report':
-                  context.push('/report');
-                  break;
-                case 'logout':
-                  ref.read(authStateProvider.notifier).logout();
-                  context.go('/login');
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'nganh',
-                child: Row(
-                  children: [
-                    Icon(Icons.category),
-                    SizedBox(width: 12),
-                    Text('Quản lý Ngành'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'report',
-                child: Row(
-                  children: [
-                    Icon(Icons.assessment),
-                    SizedBox(width: 12),
-                    Text('Báo cáo'),
-                  ],
-                ),
-              ),
-              const PopupMenuDivider(),
-              const PopupMenuItem(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout),
-                    SizedBox(width: 12),
-                    Text('Đăng xuất'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text('Danh sách Sinh viên')),
       body: Column(
         children: [
           // Search bar
@@ -382,6 +318,85 @@ class _SinhVienListPageState extends ConsumerState<SinhVienListPage> {
         icon: const Icon(Icons.add),
         label: const Text('Thêm SV'),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          if (index == 3) {
+            // Menu item - show bottom sheet
+            _showMenuBottomSheet(context);
+          } else {
+            setState(() => _selectedIndex = index);
+            switch (index) {
+              case 0:
+                // Current page - Student list
+                break;
+              case 1:
+                // Nganh list
+                context.push('/nganh');
+                break;
+              case 2:
+                // Report
+                context.push('/report');
+                break;
+            }
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Sinh viên'),
+          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Ngành'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assessment),
+            label: 'Báo cáo',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
+        ],
+      ),
+    );
+  }
+
+  void _showMenuBottomSheet(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Theme toggle
+              ListTile(
+                leading: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+                title: const Text('Sáng tối'),
+                trailing: Switch(
+                  value: isDark,
+                  onChanged: (value) {
+                    ref.read(themeModeProvider.notifier).toggleTheme();
+                  },
+                ),
+                onTap: () {
+                  ref.read(themeModeProvider.notifier).toggleTheme();
+                },
+              ),
+              const Divider(),
+              // Logout
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Đăng xuất'),
+                onTap: () {
+                  ref.read(authStateProvider.notifier).logout();
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    context.go('/login');
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
